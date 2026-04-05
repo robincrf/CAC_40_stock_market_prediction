@@ -7,7 +7,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from modeles import moy_var as mv
+from models import moy_var as mv
+from models import ran_for as rf
 from helpers import csv_file
 import matplotlib.pyplot as plt
 import numpy as np
@@ -82,6 +83,9 @@ def run():
 
     # Afficher les graphiques et récupérer la figure
     fig = display_mean(price_list)
+
+    # random forest
+    rf.display_rf()
 
     # Fermer proprement la figure
     try:

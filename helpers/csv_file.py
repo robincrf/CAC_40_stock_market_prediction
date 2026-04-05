@@ -1,29 +1,43 @@
 import datetime as dt
 import pandas as pd
 import yfinance as yf
-from pathlib import Path
+import os
 
 TICKER = "AAPL"
 START = "2025-01-01"
-END = (dt.date.today() + dt.timedelta(days = 1)).isoformat()
+DATE = dt.date.today() - dt.timedelta(days=1)
+END = (DATE).isoformat()
 
-OUT_DIR = Path("data")
-OUT_DIR.mkdir(parents = True, exist_ok = True)
-OUT_FILE = OUT_DIR / "AAPL_2025.csv"
+try:
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+except NameError:
+    base_dir = os.getcwd()
+
+OUT_DIR = os.path.join(base_dir, "data")
+os.makedirs(OUT_DIR, exist_ok=True)
+OUT_FILE = os.path.join(OUT_DIR, f"{TICKER}_{START[:4]}.csv")
 
 def loadcsv():
-    print (f"Téléchargement {TICKER} de {START} à {END}")
-    df = yf.download(TICKER, start = START, end = END, auto_adjust = False)
+    if os.path.exists(OUT_FILE):
+        print(f"Data already exists in {OUT_FILE}. Loading locally...")
+        return pd.read_csv(OUT_FILE)
+
+    import requests
+    session = requests.Session()
+    session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+    
+    print(f"Downloading {TICKER} from {START} to {END}")
+    df = yf.download(TICKER, start = START, end = END, auto_adjust = False, session=session)
 
     if df.empty :
-        raise SystemExit("Aucune donnée reçue")
+        raise SystemExit("No data received")
 
     df = df.reset_index()
 
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.get_level_values(0)
 
-    print("Colonnes après flatten :", list(df.columns))  # debug
+    print("Columns after flatten:", list(df.columns))  # debug
 
     rename_map = {
         "Date": "Date",
@@ -54,11 +68,11 @@ def loadcsv():
         df = df.sort_values("Date")
 
     df.to_csv(OUT_FILE, index=False)
-    print(f"Fichier sauvegardé -> {OUT_FILE.resolve()}")
-    print("\nAperçu :")
+    print(f"File saved -> {os.path.abspath(OUT_FILE)}")
+    print("\nPreview:")
     print(df.head().to_string(index=False))
-    print("\nInfos :")
-    print(f"Lignes : {len(df)} | Période : {df['Date'].min()} -> {df['Date'].max()}")
-    print("Colonnes :", ", ".join(df.columns))
+    print("\nInfo:")
+    print(f"Rows: {len(df)} | Period: {df['Date'].min()} -> {df['Date'].max()}")
+    print("Columns:", ", ".join(df.columns))
 
     return (df)
