@@ -1,66 +1,72 @@
-# Simulation et Analyse de Cours d’Actions — Projet FinanceJR
+# Stock Market Prediction & Analysis — FinanceJR Project
 
-## Objectif du projet
+## Project Objective
+This project aims to simulate and predict the price evolution of real-world stocks (such as CAC 40 companies or major tech stocks) using historical data. 
 
-Ce projet a pour but de simuler l’évolution du cours d’une action réelle (par exemple une société du CAC 40) à partir de ses données historiques, puis de comparer les résultats simulés à la trajectoire réelle.
-
-L’objectif est de comprendre comment modéliser un prix d’action à l’aide d’outils statistiques simples issus de la finance quantitative, et d’évaluer la qualité des simulations.
-
----
-
-## Concepts clés
-
-- Rendements logarithmiques : mesure de la variation relative du prix d’un jour à l’autre.  
-- Drift (tendance moyenne) : moyenne des rendements journaliers.  
-- Volatilité : écart-type des rendements, reflétant la variabilité du marché.  
-- Mouvement brownien géométrique (GBM) : modèle simple utilisé pour simuler l’évolution des prix.  
-- Comparaison simulation / réalité : via des indicateurs d’erreur (RMSE, MAPE, couverture de bande).
+The main objective is to understand how to model stock prices by combining quantitative finance concepts with modern **Machine Learning algorithms**, and to thoroughly evaluate the quality and accuracy of these predictions against real market trajectories.
 
 ---
 
-## Méthodologie
-
-1. **Téléchargement des données**  
-   Utilisation de la bibliothèque `yfinance` pour récupérer les cours historiques (prix de clôture ajustés).
-
-2. **Préparation**  
-   Calcul des rendements logarithmiques à partir des prix.  
-   Estimation du drift (moyenne) et de la volatilité (écart-type).
-
-3. **Simulation**  
-   Génération de plusieurs trajectoires futures du cours avec le modèle de Mouvement Brownien Géométrique :  
-
-4. **Comparaison**  
-   Comparaison des cours simulés et des cours réels sur la même période.  
-   Calcul de métriques :
-   - RMSE (erreur quadratique moyenne)
-   - MAPE (erreur moyenne en pourcentage)
-   - Coverage (taux de présence du réel dans la bande de simulation)
+## Key Concepts
+- **Logarithmic Returns**: Measures the relative price variation from one day to the next.
+- **Volatility**: Standard deviation of returns, reflecting market uncertainty and risk.
+- **Technical Indicators (Feature Engineering)**: RSI, MACD, Simple Moving Averages (SMA), and Momentum to capture market trends.
+- **Machine Learning for Time Series**: Using supervised learning to predict future prices and unsupervised learning (Clustering) to identify market regimes.
 
 ---
 
-## Résultats attendus
+## Methodology
 
-- Visualisation : courbe du prix réel vs médiane des simulations + bandes de confiance (10–90 %).  
-- Tableau de performance des prévisions :
+1. **Data Collection**  
+   Using the `yfinance` library to download historical market data (Adjusted Close, Open, High, Low, Volume).
 
-  | Indicateur | Description | Interprétation |
-  |-------------|-------------|----------------|
-  | RMSE | Erreur moyenne entre prix réel et simulé | Plus petit = meilleur |
-  | MAPE | Erreur moyenne en % | Plus petit = meilleur |
-  | Coverage | % du temps où le réel tombe dans la bande simulée | Proche de 80–90 % = bon calibrage |
+2. **Preparation & Feature Engineering**  
+   Calculating daily returns and building comprehensive features (Rolling Volatility, Price Ratios, Oscillators). Cleaning data and handling Missing Values.
+
+3. **Modeling**  
+   Training robust Machine Learning algorithms to uncover complex market patterns. We deploy three main approaches:
+   - **Random Forest**: An ensemble method using regression trees to capture non-linear relationships and assess feature importance.
+   - **XGBoost**: A highly optimized gradient boosting algorithm for accurate numerical predictions.
+   - **K-Means**: An unsupervised clustering model to identify hidden market states or regimes (e.g., highly volatile vs. steady growth).
+
+4. **Evaluation**  
+   Comparing predicted prices with actual prices over the testing period.
+   - **RMSE** (Root Mean Squared Error)
+   - **MAE** (Mean Absolute Error)
+   - **R² Score** (Coefficient of determination)
 
 ---
 
-## Technologies utilisées
+## Project Structure
 
-- Python 3.11+
-- Bibliothèques principales :
-  - pandas — manipulation de données
-  - numpy — calculs numériques
-  - matplotlib — visualisation
-  - yfinance — récupération des données de marché
-  - scipy — outils statistiques (si besoin)
+The project is divided into **5 sequential Jupyter Notebooks** to ensure a clean, step-by-step approach:
 
+- **Notebook 1**: Setup, Data Extraction & Cleaning (`yfinance`) 
+- **Notebook 2**: Exploratory Data Analysis (EDA) & Trend Analysis
+- **Notebook 3**: Modeling & Prediction using **Random Forest**
+- **Notebook 4**: Modeling & Prediction using **XGBoost**
+- **Notebook 5**: Market Regime Detection using **K-Means Clustering**
 
+---
 
+## Expected Results
+- **Visualizations**: Clear plots overlaying the real price vs. the predicted price trajectory, alongside residual error graphs.
+- **Performance Evaluation**:
+
+  | Metric | Description | Interpretation |
+  |-----------|-------------|----------------|
+  | **RMSE** | Root Mean Square Error | Lower is better |
+  | **MAE** | Mean Absolute Error    | Lower is better |
+  | **R²**   | Variance explained by the model | Closer to 1.0 = highly accurate |
+
+---
+
+## Technologies Stack
+- **Python 3.11+**
+- **Core Libraries**:
+  - `pandas` — Data manipulation & Time Series
+  - `numpy` — Numerical computations
+  - `matplotlib` / `seaborn` — Data visualization
+  - `yfinance` — Market data retrieval
+  - `scikit-learn` — Machine learning (Random Forest, K-Means, Metrics)
+  - `xgboost` — Gradient boosting framework
