@@ -4,9 +4,8 @@ import yfinance as yf
 import os
 
 TICKER = "AAPL"
-START = "2025-01-01"
-DATE = dt.date.today() - dt.timedelta(days=1)
-END = (DATE).isoformat()
+START = "2024-01-01"
+END = "2026-01-01"
 
 try:
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
